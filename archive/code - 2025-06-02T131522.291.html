@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Concepts Prototype - Advanced</title>
+    <!-- Swiper.js CSS CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <!-- Google Fonts CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-red: #E74C3C;
+            --color-green: #27AE60;
+            --color-blue: #3498DB;
+            --color-orange: #F39C12;
+            --color-purple: #8E44AD; /* Color for Aksiyon cards or buttons */
+
+            --color-detail-dark-green: #2C5F2D;
+            --color-detail-light-green: #97BC62FF;
+            --color-detail-aksiyon: #6f2da8; /* Darker purple for Aksiyon cards */
+
+
+            --color-dark-bg: #121212;
+            --color-card-bg: #1e1e1e;
+            --color-light-text: #f0f0f0;
+            --color-medium-text: #aaaaaa;
+            --color-accent-text: #ffffff;
+
+            --card-border-radius: 12px;
+            --card-padding: 20px;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            --card-border: 1px solid #333;
+
+            --font-main: 'Roboto', sans-serif;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-dark-bg);
+            color: var(--color-light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: opacity var(--transition-speed) ease-in-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .screen-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* Screen 1: Initial Card Stack */
+        #screen1 .card-stack-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .card-stack {
+            position: relative;
+            width: 220px;
+            height: 320px;
+        }
+
+        .stacked-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            border: 4px solid white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: var(--card-padding);
+            transform-origin: center;
+            transition: transform var(--transition-speed) ease-out, box-shadow var(--transition-speed) ease-out;
+            transform: translateX(calc(var(--offset) * 10px)) translateY(calc(var(--offset) * -10px)) translateZ(calc(var(--offset) * -20px)) rotateZ(calc(var(--offset) * 2deg));
+        }
+
+        .card-stack-wrapper:hover .stacked-card {
+            transform: translateX(calc(var(--offset) * 12px)) translateY(calc(var(--offset) * -12px)) translateZ(calc(var(--offset) * -10px)) rotateZ(calc(var(--offset) * 1deg));
+        }
+        .card-stack-wrapper:hover .stacked-card:nth-child(4) {
+            transform: translateY(-10px) translateZ(10px) scale(1.02);
+        }
+
+        .card-content-inner {
+            text-align: center;
+            color: var(--color-accent-text);
+        }
+
+        .card-header-label {
+            font-size: 0.7rem;
+            color: var(--color-light-text);
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .stacked-card h2, .category-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .card-icon-placeholder {
+            font-size: 2.5rem;
+            margin-top: 10px;
+        }
+
+        .card-red { background-color: var(--color-red); }
+        .card-green { background-color: var(--color-green); }
+        .card-blue { background-color: var(--color-blue); }
+        .card-orange { background-color: var(--color-orange); }
+
+        #screen1 .screen1-prompt {
+            margin-top: 30px;
+            font-size: 1rem;
+            color: var(--color-medium-text);
+        }
+
+        /* Screen 2: Category Selection */
+        .category-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .category-card {
+            width: 220px;
+            height: 300px;
+            border-radius: var(--card-border-radius);
+            padding: var(--card-padding);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            box-shadow: var(--card-shadow);
+            border: 4px solid white;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Screen 3 (Details) & Screen 4 (Aksiyons) common button styling */
+        .back-button { /* Common class for back buttons */
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background-color: var(--color-medium-text);
+            color: var(--color-dark-bg);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color var(--transition-speed);
+            z-index: 10;
+        }
+        .back-button:hover {
+            background-color: var(--color-light-text);
+        }
+
+        .carousel-main-title {
+            font-size: 2rem;
+            color: var(--color-accent-text);
+            margin-bottom: 30px;
+            margin-top: 60px; /* Space for back button */
+            text-align: center;
+        }
+        
+        /* Swiper Container styling (common for detail & aksiyon) */
+        .swiper-container {
+            width: 100%;
+            max-width: 90%;
+            padding-top: 20px;
+            padding-bottom: 50px; /* Space for pagination */
+        }
+
+        .detail-card { /* Common styling for cards in carousels */
+            background-color: var(--color-card-bg);
+            border-radius: var(--card-border-radius);
+            padding: var(--card-padding);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            min-height: 300px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            position: relative; /* For potential absolute elements inside */
+        }
+
+        .detail-card-header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .detail-card-type {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-accent-text);
+        }
+
+        .detail-card-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-accent-text);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .detail-card-title {
+            font-size: 1.1rem;
+            color: var(--color-light-text);
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .detail-card-icon {
+            font-size: 2.5rem;
+            color: #FFD700; /* Gold for star */
+            align-self: center;
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+        .aksiyon-card .detail-card-icon { /* Aksiyon specific icon styling if needed */
+             color: var(--color-purple); /* e.g., a checkmark or different icon color */
+        }
+
+
+        .detail-card-subtext {
+            font-size: 0.8rem;
+            color: var(--color-medium-text);
+            background-color: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 10px;
+            white-space: pre-line;
+        }
+
+        .view-aksiyons-btn {
+            background-color: var(--color-purple);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px; /* More space */
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: block;
+            width: fit-content;
+            transition: background-color var(--transition-speed);
+            align-self: flex-start; /* Align to the left */
+        }
+        .view-aksiyons-btn:hover {
+            background-color: #732d91; /* Darker purple */
+        }
+
+        /* Swiper Navigation/Pagination Styling (common) */
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--color-light-text) !important;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            width: 44px !important;
+            height: 44px !important;
+            transition: background-color var(--transition-speed);
+        }
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background-color: rgba(0,0,0,0.6);
+        }
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 20px !important;
+        }
+
+        .swiper-pagination-bullet {
+            background-color: var(--color-medium-text) !important;
+            opacity: 0.7 !important;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: var(--color-light-text) !important;
+            opacity: 1 !important;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .category-cards-container { flex-direction: column; align-items: center; }
+            .category-card { width: 80%; max-width: 280px; height: auto; min-height: 240px; }
+            .stacked-card { width: 180px; height: 280px; }
+            .stacked-card h2, .category-card h2 { font-size: 1.5rem; }
+            .card-icon-placeholder { font-size: 2rem; }
+            .back-button { top: 15px; left: 15px; padding: 8px 12px; }
+            .carousel-main-title { font-size: 1.5rem; margin-top: 50px; }
+            .swiper-container { max-width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .stacked-card { width: 150px; height: 240px; }
+            .stacked-card h2, .category-card h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+
+        <!-- Screen 1: Initial Card Stack -->
+        <section id="screen1" class="screen active">
+            <div class="screen-content">
+                <div class="card-stack-wrapper">
+                    <div class="card-stack">
+                        <div class="stacked-card card-orange" style="--offset: 3;"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Öğrenme & Gelişim</h2><div class="card-icon-placeholder">🌱</div></div></div>
+                        <div class="stacked-card card-blue" style="--offset: 2;"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Dahili Süreçler</h2><div class="card-icon-placeholder">⚙️</div></div></div>
+                        <div class="stacked-card card-green" style="--offset: 1;"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Müşteri</h2><div class="card-icon-placeholder">🧑‍🤝‍🧑</div></div></div>
+                        <div class="stacked-card card-red" style="--offset: 0;" id="top-stacked-card"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Finans</h2><div class="card-icon-placeholder">💰</div></div></div>
+                    </div>
+                </div>
+                <p class="screen1-prompt">Başlamak için kartlara tıklayın</p>
+            </div>
+        </section>
+
+        <!-- Screen 2: Category Selection -->
+        <section id="screen2" class="screen">
+            <div class="screen-content">
+                <div class="category-cards-container">
+                    <div class="category-card card-red" data-category="finans"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Finans</h2><div class="card-icon-placeholder">💰</div></div></div>
+                    <div class="category-card card-green" data-category="musteri"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Müşteri</h2><div class="card-icon-placeholder">🧑‍🤝‍🧑</div></div></div>
+                    <div class="category-card card-blue" data-category="dahiliSurecler"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Dahili Süreçler</h2><div class="card-icon-placeholder">⚙️</div></div></div>
+                    <div class="category-card card-orange" data-category="ogrenmeGelisim"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Öğrenme & Gelişim</h2><div class="card-icon-placeholder">🌱</div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 3: Detailed Content (Amaç & Hedef Carousel) -->
+        <section id="screen3" class="screen">
+            <div class="screen-content">
+                <button id="back-to-categories" class="back-button" aria-label="Kategorilere geri dön">&larr; Geri</button>
+                <h3 id="carousel-title" class="carousel-main-title"></h3>
+                <div class="swiper-container detail-swiper">
+                    <div class="swiper-wrapper" id="detail-cards-wrapper">
+                        <!-- Detail cards (Amaç, Hedef) will be populated here -->
+                    </div>
+                    <div class="swiper-pagination detail-pagination"></div>
+                    <div class="swiper-button-prev detail-swiper-button-prev"></div>
+                    <div class="swiper-button-next detail-swiper-button-next"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 4: Aksiyon Details (Carousel) -->
+        <section id="screen4" class="screen">
+            <div class="screen-content">
+                <button id="back-to-details" class="back-button" aria-label="Detaylara geri dön">&larr; Geri</button>
+                <h3 id="aksiyon-carousel-title" class="carousel-main-title"></h3>
+                <div class="swiper-container aksiyon-swiper">
+                    <div class="swiper-wrapper" id="aksiyon-cards-wrapper">
+                        <!-- Aksiyon cards will be populated here -->
+                    </div>
+                    <div class="swiper-pagination aksiyon-pagination"></div>
+                    <div class="swiper-button-prev aksiyon-swiper-button-prev"></div>
+                    <div class="swiper-button-next aksiyon-swiper-button-next"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screen1 = document.getElementById('screen1');
+            const screen2 = document.getElementById('screen2');
+            const screen3 = document.getElementById('screen3');
+            const screen4 = document.getElementById('screen4'); // New screen
+
+            const cardStackWrapper = document.querySelector('.card-stack-wrapper');
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            // Screen 3 elements
+            const detailCardsWrapper = document.getElementById('detail-cards-wrapper');
+            const carouselTitle = document.getElementById('carousel-title');
+            const backToCategoriesButton = document.getElementById('back-to-categories');
+            let detailSwiper;
+
+            // Screen 4 elements
+            const aksiyonCardsWrapper = document.getElementById('aksiyon-cards-wrapper');
+            const aksiyonCarouselTitle = document.getElementById('aksiyon-carousel-title');
+            const backToDetailsButton = document.getElementById('back-to-details');
+            let aksiyonSwiper;
+
+            // State variables for navigation
+            let currentCategoryKey = null;
+            let currentSelectedHedef = null;
+
+            const detailData = {
+                finans: {
+                    title: "Finans Detayları",
+                    cards: [
+                        { type: 'Amaç', number: 'A5', title: 'Karlılık beklentilerimize paralel proje ve pazarlara odaklanmak.', icon: '⭐', color: 'var(--color-detail-dark-green)' },
+                        {
+                            type: 'Hedef', number: 'H1', title: 'Yüksek getiri sağlayan proje ve pazarlar için iş geliştirme yapısının sorumluluk alanlarını ve yetkinliklerini gözden geçirmek.', subText: 'İlgili Amaç: Karlılık (A5)', color: 'var(--color-detail-light-green)',
+                            aksiyons: [
+                                { type: 'Aksiyon', number: 'H1.1', title: 'Pazar analizleri ve fizibilite çalışmaları yapmak.', subText: 'Sorumlu: ArGe Departmanı\nBitiş: Q1 2024', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H1.2', title: 'Yeni yatırım fırsatlarını değerlendirmek.', subText: 'Sorumlu: Finans Direktörlüğü', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H1.3', title: 'Mevcut portföyün risk/getiri analizini güncellemek.', subText: 'Sorumlu: Risk Yönetimi', color: 'var(--color-detail-aksiyon)' },
+                            ]
+                        },
+                        { type: 'Amaç', number: 'A9', title: 'Nakit akışını optimize etmek.', icon: '⭐', color: 'var(--color-detail-dark-green)' },
+                        {
+                            type: 'Hedef', number: 'H5', title: 'Alacak tahsilat sürelerini %15 kısaltmak.', subText: 'İlgili Amaç: Nakit Akışı (A9)', color: 'var(--color-detail-light-green)',
+                            aksiyons: [
+                                { type: 'Aksiyon', number: 'H5.1', title: 'Müşteri kredi limitlerini gözden geçirmek.', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H5.2', title: 'Otomatik fatura hatırlatma sistemi kurmak.', color: 'var(--color-detail-aksiyon)' },
+                            ]
+                        }
+                    ]
+                },
+                musteri: {
+                    title: "Müşteri Detayları",
+                    cards: [
+                        { type: 'Amaç', number: 'A6', title: '5 Yıl içinde global ölçekte marka bilinirliğini %30 artırmak.', icon: '⭐', color: 'var(--color-detail-dark-green)' },
+                        {
+                            type: 'Hedef', number: 'H2', title: 'Müşteri memnuniyet oranını %80 üstünde tutmak.', subText: 'İlgili Amaç: Marka Bilinirliği (A6)', color: 'var(--color-detail-light-green)',
+                            aksiyons: [
+                                { type: 'Aksiyon', number: 'H2.1', title: 'Müşteri geri bildirim sistemlerini iyileştirmek.', subText: 'Anketler ve fokus grupları düzenlemek.', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H2.2', title: 'Sadakat programları geliştirmek.', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H2.3', title: 'Şikayet çözüm sürelerini ortalama 24 saate indirmek.', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H2.4', title: 'Proaktif müşteri iletişimi stratejileri uygulamak.', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H2.5', title: 'VIP müşteri segmenti için özel hizmetler sunmak.', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H2.6', title: 'Sosyal medya etkileşimini artırmak.', color: 'var(--color-detail-aksiyon)' },
+                                { type: 'Aksiyon', number: 'H2.7', title: 'Müşteri hizmetleri ekibine periyodik eğitimler vermek.', color: 'var(--color-detail-aksiyon)' },
+                            ]
+                        }
+                    ]
+                },
+                dahiliSurecler: { /* Add some data if needed */ title: "Dahili Süreçler Detayları", cards: [{ type: 'Amaç', number: 'DS1', title: 'Verimliliği artır.', icon: '⭐', color: 'var(--color-detail-dark-green)'}] },
+                ogrenmeGelisim: { /* Add some data if needed */ title: "Öğrenme & Gelişim Detayları", cards: [{ type: 'Amaç', number: 'OG1', title: 'Yetkinlikleri geliştir.', icon: '⭐', color: 'var(--color-detail-dark-green)'}] }
+            };
+
+            function showScreen(screenToShow) {
+                [screen1, screen2, screen3, screen4].forEach(s => s.classList.remove('active'));
+                screenToShow.classList.add('active');
+            }
+
+            if (cardStackWrapper) {
+                cardStackWrapper.addEventListener('click', () => showScreen(screen2));
+            }
+
+            categoryCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    currentCategoryKey = card.dataset.category;
+                    if (detailData[currentCategoryKey]) {
+                        populateDetailCarousel(detailData[currentCategoryKey]);
+                        showScreen(screen3);
+                    } else {
+                        populateDetailCarousel({ title: "Veri Bulunamadı", cards: [] });
+                        showScreen(screen3);
+                    }
+                });
+            });
+
+            backToCategoriesButton.addEventListener('click', () => showScreen(screen2));
+            backToDetailsButton.addEventListener('click', () => { // Screen 4 back to Screen 3
+                if (currentCategoryKey && detailData[currentCategoryKey]) {
+                     // Re-populate screen3 to ensure it's fresh, though Swiper might retain its state.
+                     // This is safer if user navigates deeply.
+                    populateDetailCarousel(detailData[currentCategoryKey]);
+                }
+                showScreen(screen3);
+            });
+
+            function createCardHTML(cardInfo, cardClass = 'detail-card') {
+                let subTextHTML = cardInfo.subText ? `<div class="detail-card-subtext">${cardInfo.subText.replace(/\n/g, '<br>')}</div>` : '';
+                let iconHTML = cardInfo.icon ? `<div class="detail-card-icon">${cardInfo.icon}</div>` : '';
+                
+                return `
+                    <div class="detail-card-header">
+                        <span class="detail-card-type">${cardInfo.type}</span>
+                        <span class="detail-card-number">${cardInfo.number}</span>
+                    </div>
+                    <p class="detail-card-title">${cardInfo.title.replace(/\n/g, '<br>')}</p>
+                    ${iconHTML}
+                    ${subTextHTML}
+                `;
+            }
+            
+            function populateDetailCarousel(categoryData) {
+                carouselTitle.textContent = categoryData.title;
+                detailCardsWrapper.innerHTML = '';
+
+                if (!categoryData.cards || categoryData.cards.length === 0) {
+                    detailCardsWrapper.innerHTML = `<div class="swiper-slide detail-card" style="justify-content:center; align-items:center;"><p>Bu kategori için detay bulunmamaktadır.</p></div>`;
+                } else {
+                    categoryData.cards.forEach(cardInfo => {
+                        const slide = document.createElement('div');
+                        slide.classList.add('swiper-slide', 'detail-card');
+                        slide.style.backgroundColor = cardInfo.color || 'var(--color-card-bg)';
+                        slide.innerHTML = createCardHTML(cardInfo);
+
+                        if (cardInfo.type === 'Hedef' && cardInfo.aksiyons && cardInfo.aksiyons.length > 0) {
+                            const aksiyonButton = document.createElement('button');
+                            aksiyonButton.classList.add('view-aksiyons-btn');
+                            aksiyonButton.setAttribute('aria-label', `${cardInfo.title} için aksiyonları gör`);
+                            aksiyonButton.textContent = `Aksiyonları Gör (${cardInfo.aksiyons.length})`;
+                            aksiyonButton.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                currentSelectedHedef = cardInfo;
+                                populateAksiyonCarousel(cardInfo, cardInfo.aksiyons);
+                                showScreen(screen4);
+                            });
+                            slide.appendChild(aksiyonButton);
+                        }
+                        detailCardsWrapper.appendChild(slide);
+                    });
+                }
+
+                if (detailSwiper) detailSwiper.destroy(true, true);
+                detailSwiper = new Swiper('.detail-swiper', {
+                    slidesPerView: 1, spaceBetween: 20, grabCursor: true,
+                    pagination: { el: '.detail-pagination', clickable: true },
+                    navigation: { nextEl: '.detail-swiper-button-next', prevEl: '.detail-swiper-button-prev' },
+                    breakpoints: { 768: { slidesPerView: 2, spaceBetween: 30 }, 1024: { slidesPerView: 3, spaceBetween: 30 }},
+                    a11y: { prevSlideMessage: 'Önceki slayt', nextSlideMessage: 'Sonraki slayt' }
+                });
+                if (categoryData.cards && categoryData.cards.length > 0) {
+                     detailSwiper.update(); detailSwiper.slideTo(0,0);
+                }
+            }
+
+            function populateAksiyonCarousel(hedefObject, aksiyonsArray) {
+                aksiyonCarouselTitle.textContent = `Aksiyonlar: ${hedefObject.title}`;
+                aksiyonCardsWrapper.innerHTML = '';
+
+                if (!aksiyonsArray || aksiyonsArray.length === 0) {
+                     aksiyonCardsWrapper.innerHTML = `<div class="swiper-slide detail-card aksiyon-card" style="justify-content:center; align-items:center;"><p>Bu hedef için aksiyon bulunmamaktadır.</p></div>`;
+                } else {
+                    aksiyonsArray.forEach(aksiyonInfo => {
+                        const slide = document.createElement('div');
+                        slide.classList.add('swiper-slide', 'detail-card', 'aksiyon-card'); // Added 'aksiyon-card' for potential specific styling
+                        slide.style.backgroundColor = aksiyonInfo.color || 'var(--color-detail-aksiyon)';
+                        slide.innerHTML = createCardHTML(aksiyonInfo);
+                        aksiyonCardsWrapper.appendChild(slide);
+                    });
+                }
+
+                if (aksiyonSwiper) aksiyonSwiper.destroy(true, true);
+                aksiyonSwiper = new Swiper('.aksiyon-swiper', {
+                    slidesPerView: 1, spaceBetween: 20, grabCursor: true,
+                    pagination: { el: '.aksiyon-pagination', clickable: true },
+                    navigation: { nextEl: '.aksiyon-swiper-button-next', prevEl: '.aksiyon-swiper-button-prev' },
+                    breakpoints: { 768: { slidesPerView: 2, spaceBetween: 30 }, 1024: { slidesPerView: 3, spaceBetween: 30 }},
+                    a11y: { prevSlideMessage: 'Önceki aksiyon', nextSlideMessage: 'Sonraki aksiyon' }
+                });
+                 if (aksiyonsArray && aksiyonsArray.length > 0) {
+                    aksiyonSwiper.update(); aksiyonSwiper.slideTo(0,0);
+                }
+            }
+            
+            showScreen(screen1); // Initial screen
+        });
+    </script>
+</body>
+</html>

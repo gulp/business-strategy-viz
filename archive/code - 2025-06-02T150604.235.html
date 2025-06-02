@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Concepts Hierarchy V4</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-red: #D9534F; --color-red-light: #F8D7DA;
+            --color-green: #5CB85C; --color-green-light: #DFF0D8;
+            --color-blue: #428BCA; --color-blue-light: #D9EDF7;
+            --color-orange: #F0AD4E; --color-orange-light: #FCF8E3;
+            
+            --color-aksiyon-bg: #000000; 
+            --color-static-amac-bg: #111111; /* For both static Amac and Hedef cards */
+
+            --color-dark-bg: #121212;
+            --color-card-bg: #1e1e1e; 
+            --color-light-text: #f0f0f0;
+            --color-dark-text: #212529; 
+            --color-medium-text: #aaaaaa;
+            --color-accent-text: #ffffff;
+
+            --card-border-radius: 12px;
+            --card-padding: 20px;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            --card-border: 1px solid #333;
+
+            --font-main: 'Roboto', sans-serif;
+            --transition-speed: 0.3s;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-main); background-color: var(--color-dark-bg); color: var(--color-light-text); line-height: 1.6; overflow-x: hidden; }
+        .main-container { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .screen { width: 100%; min-height: 100vh; padding: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; transition: opacity var(--transition-speed) ease-in-out; }
+        .screen.active { display: flex; }
+        .screen-content { width: 100%; max-width: 1200px; margin: auto; }
+
+        /* Screen 1 & 2 (Largely unchanged) */
+        #screen1 .card-stack-wrapper { display: flex; justify-content: center; align-items: center; perspective: 1000px; margin-bottom: 20px; cursor: pointer; }
+        .card-stack { position: relative; width: 220px; height: 320px; }
+        .stacked-card { position: absolute; width: 100%; height: 100%; border-radius: var(--card-border-radius); box-shadow: var(--card-shadow); border: 4px solid white; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: var(--card-padding); transform-origin: center; transition: transform var(--transition-speed) ease-out, box-shadow var(--transition-speed) ease-out; transform: translateX(calc(var(--offset) * 10px)) translateY(calc(var(--offset) * -10px)) translateZ(calc(var(--offset) * -20px)) rotateZ(calc(var(--offset) * 2deg)); }
+        .card-stack-wrapper:hover .stacked-card { transform: translateX(calc(var(--offset) * 12px)) translateY(calc(var(--offset) * -12px)) translateZ(calc(var(--offset) * -10px)) rotateZ(calc(var(--offset) * 1deg)); }
+        .card-stack-wrapper:hover .stacked-card:nth-child(4) { transform: translateY(-10px) translateZ(10px) scale(1.02); }
+        .card-content-inner { text-align: center; color: var(--color-accent-text); }
+        .card-header-label { font-size: 0.7rem; color: var(--color-light-text); margin-bottom: 5px; display: block; text-transform: uppercase; font-weight: 500; }
+        .stacked-card h2, .category-card h2 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 700; color: var(--color-accent-text); }
+        .card-icon-placeholder { font-size: 2.5rem; margin-top: 10px; }
+        .card-red { background-color: var(--color-red); } .card-green { background-color: var(--color-green); } .card-blue { background-color: var(--color-blue); } .card-orange { background-color: var(--color-orange); }
+        #screen1 .screen1-prompt { margin-top: 30px; font-size: 1rem; color: var(--color-medium-text); }
+        .category-cards-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; padding: 20px 0; }
+        .category-card { width: 220px; height: 300px; border-radius: var(--card-border-radius); padding: var(--card-padding); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: pointer; transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease; box-shadow: var(--card-shadow); border: 4px solid white; }
+        .category-card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); }
+
+        /* Common for Screens 3, 4, 5 */
+        .back-button { position: absolute; top: 25px; left: 25px; background-color: var(--color-medium-text); color: var(--color-dark-bg); border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: background-color var(--transition-speed); z-index: 100; }
+        .back-button:hover { background-color: var(--color-light-text); }
+        
+        .carousel-screen-title {
+            color: var(--color-accent-text); margin-bottom: 30px; margin-top: 70px; text-align: center;
+            display: flex; align-items: center; justify-content: center; flex-wrap: wrap; 
+        }
+        .title-eyebrow { 
+            font-size: 0.9rem; font-weight: 500; color: var(--color-light-text);
+            background-color: rgba(255, 255, 255, 0.1); padding: 3px 8px; 
+            border-radius: var(--card-border-radius); margin-right: 10px; 
+            line-height: 1.4; display: inline-block;
+        }
+        .carousel-screen-title .title-text-separator { /* For the " / " */
+            margin: 0 0.3em;
+            font-weight: 400;
+            color: var(--color-medium-text);
+        }
+        .carousel-screen-title .main-title-text {
+            font-size: 1.8rem; font-weight: 700; display: inline; 
+        }
+         #s3_title .main-title-text { font-size: 2rem; } 
+
+
+        .swiper-container { width: 100%; max-width: 90%; padding-top: 20px; padding-bottom: 50px; }
+        
+        .item-card {
+            background-color: var(--color-card-bg); border-radius: var(--card-border-radius); padding: var(--card-padding);
+            display: flex; flex-direction: column; 
+            align-items: flex-start; text-align: left;
+            min-height: 300px; border: var(--card-border); box-shadow: var(--card-shadow); position: relative;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .item-card.clickable:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.35); cursor: pointer;}
+
+        .item-card-header { display: flex; justify-content: space-between; width: 100%; margin-bottom: 10px; align-items: center; }
+        .item-card-main-title { font-size: 1.3rem; font-weight: 700;  }
+        .item-card-id { font-size: 1.1rem; font-weight: 500; background-color: rgba(255, 255, 255, 0.1); padding: 2px 8px; border-radius: 4px; }
+        
+        .item-card-description { font-size: 1rem; margin-bottom: 15px; flex-grow: 1; }
+        .item-card-icon { font-size: 2rem; color: #FFD700; align-self: center; margin-top: 10px; margin-bottom: 10px; }
+        
+        .kpi-stack-container { width: 100%; margin-top: auto; }
+        .kpi-item {
+            font-size: 0.8rem; background-color: rgba(255,255,255,0.05); 
+            padding: 8px 10px; border-radius: 5px; width: 100%; margin-top: 8px; 
+            white-space: pre-line; color: var(--color-light-text); 
+        }
+        .aksiyon-card-item .kpi-item { background-color: rgba(255,255,255,0.1); }
+        
+        /* Static Header Card Styling (Common for muted index cards) */
+        .static-header-card { 
+            opacity: 0.9; cursor: pointer !important; 
+            border: 2px dashed var(--color-medium-text) !important; /* Ensure dashed border */
+        }
+        .static-header-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.25); }
+        
+        .static-muted-header { /* For LV2 static Amac and LV3 static Hedef */
+            background-color: var(--color-static-amac-bg) !important;
+        }
+        .static-muted-header .item-card-main-title,
+        .static-muted-header .item-card-id,
+        .static-muted-header .item-card-description { color: var(--color-medium-text) !important; }
+        .static-muted-header .item-card-id { background-color: rgba(170, 170, 170, 0.1) !important; } /* Muted ID bg */
+        .static-muted-header .item-card-icon { opacity: 0.5; }
+
+        /* Aksiyon Card Specific */
+        .aksiyon-card-item { background-color: var(--color-aksiyon-bg) !important; border-color: #222; }
+        .aksiyon-card-item .item-card-main-title,
+        .aksiyon-card-item .item-card-id,
+        .aksiyon-card-item .item-card-description { color: var(--color-light-text); }
+        .aksiyon-card-item .item-card-id { background-color: rgba(255, 255, 255, 0.15); }
+
+        .swiper-button-next, .swiper-button-prev { color: var(--color-light-text) !important; background-color: rgba(0,0,0,0.3); border-radius: 50%; width: 44px !important; height: 44px !important; transition: background-color var(--transition-speed); }
+        .swiper-button-next:hover, .swiper-button-prev:hover { background-color: rgba(0,0,0,0.6); }
+        .swiper-button-next::after, .swiper-button-prev::after { font-size: 20px !important; }
+        .swiper-pagination-bullet { background-color: var(--color-medium-text) !important; opacity: 0.7 !important; }
+        .swiper-pagination-bullet-active { background-color: var(--color-light-text) !important; opacity: 1 !important; }
+
+        @media (max-width: 768px) {
+            .category-card { width: 80%; max-width: 280px; height: auto; min-height: 240px; }
+            .stacked-card { width: 180px; height: 280px; }
+            .stacked-card h2, .category-card h2 { font-size: 1.5rem; }
+            .back-button { top: 15px; left: 15px; padding: 8px 12px; }
+            .carousel-screen-title .main-title-text { font-size: 1.5rem; }
+             #s3_title .main-title-text { font-size: 1.7rem; }
+            .title-eyebrow { font-size: 0.8rem; padding: 2px 6px; }
+            .item-card { min-height: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Screen 1: Initial Stack -->
+        <section id="screen1" class="screen active">
+            <div class="screen-content">
+                <div class="card-stack-wrapper">
+                    <div class="card-stack">
+                        <div class="stacked-card card-orange" style="--offset: 3;"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Öğrenme & Gelişim</h2><div class="card-icon-placeholder">🌱</div></div></div>
+                        <div class="stacked-card card-blue" style="--offset: 2;"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Dahili Süreçler</h2><div class="card-icon-placeholder">⚙️</div></div></div>
+                        <div class="stacked-card card-green" style="--offset: 1;"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Müşteri</h2><div class="card-icon-placeholder">🧑‍🤝‍🧑</div></div></div>
+                        <div class="stacked-card card-red" style="--offset: 0;" id="top-stacked-card"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Finans</h2><div class="card-icon-placeholder">💰</div></div></div>
+                    </div>
+                </div>
+                <p class="screen1-prompt">Başlamak için kartlara tıklayın</p>
+            </div>
+        </section>
+
+        <!-- Screen 2: Stratejik Temel Alanlar (Categories) -->
+        <section id="screen2" class="screen">
+            <div class="screen-content">
+                <h2 class="carousel-screen-title" style="margin-top: 20px; margin-bottom: 20px;"><span class="main-title-text">Stratejik Temel Alanlar</span></h2>
+                <div class="category-cards-container">
+                    <div class="category-card card-red" data-area="finans"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Finans</h2><div class="card-icon-placeholder">💰</div></div></div>
+                    <div class="category-card card-green" data-area="musteri"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Müşteri</h2><div class="card-icon-placeholder">🧑‍🤝‍🧑</div></div></div>
+                    <div class="category-card card-blue" data-area="dahiliSurecler"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Dahili Süreçler</h2><div class="card-icon-placeholder">⚙️</div></div></div>
+                    <div class="category-card card-orange" data-area="ogrenmeGelisim"><div class="card-content-inner"><span class="card-header-label">STRATEJİK TEMEL ALANLAR</span><h2>Öğrenme & Gelişim</h2><div class="card-icon-placeholder">🌱</div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 3: Amaçlar Listesi (LV1) -->
+        <section id="screen3" class="screen">
+            <div class="screen-content">
+                <button id="s3_backButton" class="back-button">&larr; Stratejik Temel Alanlar</button>
+                <h3 id="s3_title" class="carousel-screen-title"></h3>
+                <div class="swiper-container" id="s3_swiper_container">
+                    <div class="swiper-wrapper" id="s3_swiper_wrapper"></div>
+                    <div class="swiper-pagination" id="s3_pagination"></div>
+                    <div class="swiper-button-prev" id="s3_prev"></div>
+                    <div class="swiper-button-next" id="s3_next"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 4: Hedefler Listesi (LV2) -->
+        <section id="screen4" class="screen">
+            <div class="screen-content">
+                <button id="s4_backButton" class="back-button"></button>
+                <h3 id="s4_title" class="carousel-screen-title"></h3>
+                <div class="swiper-container" id="s4_swiper_container">
+                    <div class="swiper-wrapper" id="s4_swiper_wrapper"></div>
+                    <div class="swiper-pagination" id="s4_pagination"></div>
+                    <div class="swiper-button-prev" id="s4_prev"></div>
+                    <div class="swiper-button-next" id="s4_next"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 5: Aksiyonlar Listesi (LV3) -->
+        <section id="screen5" class="screen">
+            <div class="screen-content">
+                <button id="s5_backButton" class="back-button"></button>
+                <h3 id="s5_title" class="carousel-screen-title"></h3>
+                <div class="swiper-container" id="s5_swiper_container">
+                    <div class="swiper-wrapper" id="s5_swiper_wrapper"></div>
+                    <div class="swiper-pagination" id="s5_pagination"></div>
+                    <div class="swiper-button-prev" id="s5_prev"></div>
+                    <div class="swiper-button-next" id="s5_next"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screens = {
+                s1: document.getElementById('screen1'), s2: document.getElementById('screen2'),
+                s3: document.getElementById('screen3'), s4: document.getElementById('screen4'),
+                s5: document.getElementById('screen5')
+            };
+            const cardStackWrapper = document.querySelector('.card-stack-wrapper');
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            let swipers = { s3: null, s4: null, s5: null };
+            let currentStrategicAreaKey = null;
+            let currentAmac = null;
+            let currentHedef = null;
+            let currentPillarColor = '';
+            let currentPillarColorLight = '';
+            let currentPillarUseDarkText = false;
+
+
+            const strategicVisionData = {
+                finans: {
+                    areaTitle: "Finans", pluralTitle: "Finansal Amaçlar", singularHedefTitle: "Finansal Hedef", pluralHedefTitle: "Finansal Hedefler",
+                    pillarColor: 'var(--color-red)', pillarColorLight: 'var(--color-red-light)', useDarkText: true,
+                    amacs: Array.from({ length: 5 }, (_, i) => ({
+                        id: `A${i + 1}`, title: `Karlılığı artırmak ve finansal sürdürülebilirliği sağlamak ana hedefimizdir. Bu amaç altında çeşitli stratejiler izlenecektir. Pazar payını genişletme ve maliyet optimizasyonu önceliklidir.`, icon: '⭐',
+                        hedefler: Array.from({ length: Math.floor(Math.random() * 3) + 5 }, (__, j) => ({
+                            id: `H${j + 1}`, title: `Net kar marjını %${(j+1)*2}'ye çıkarmak ve operasyonel giderleri %${j+3} azaltmak.`,
+                            aksiyons: Array.from({ length: Math.floor(Math.random() * 3) + 3 }, (___, k) => ({
+                                id: `.${k + 1}`, title: `Aksiyon ${k+1}: Detaylı bütçe takibi ve raporlama sistemi kurmak.`, 
+                                subText: [ `KPI ${k+1}.1: Aylık bütçe sapma oranı < %2`, `KPI ${k+1}.2: Raporlama frekansı: Haftalık`, (k % 2 === 0 ? `KPI ${k+1}.3: Ek maliyet tasarruf potansiyeli tespiti` : null)].filter(Boolean)
+                            }))
+                        }))
+                    }))
+                },
+                musteri: {
+                    areaTitle: "Müşteri", pluralTitle: "Müşteri Amaçları", singularHedefTitle: "Müşteri Hedefi", pluralHedefTitle: "Müşteri Hedefleri",
+                    pillarColor: 'var(--color-green)', pillarColorLight: 'var(--color-green-light)', useDarkText: true,
+                    amacs: Array.from({ length: 4 }, (_, i) => ({
+                        id: `A${i + 6}`, title: `Müşteri memnuniyetini ve bağlılığını en üst düzeye çıkarmak. Marka bilinirliğini global pazarda artırmak.`, icon: '⭐',
+                        hedefler: Array.from({ length: Math.floor(Math.random() * 3) + 5 }, (__, j) => ({
+                            id: `H${j + 1}`, title: `Müşteri memnuniyet skorunu (NPS) +50 üzerine çıkarmak. Sadık müşteri oranını %${60+j} seviyesine getirmek.`,
+                            aksiyons: Array.from({ length: Math.floor(Math.random() * 3) + 3 }, (___, k) => ({
+                                id: `.${k + 1}`, title: `Aksiyon ${k+1}: Kişiselleştirilmiş pazarlama kampanyaları yürütmek.`, 
+                                subText: [`KPI ${k+1}.1: Kampanya dönüşüm oranı > %${k+2}`, `KPI ${k+1}.2: Yeni abone sayısı artışı`]
+                            }))
+                        }))
+                    }))
+                },
+                dahiliSurecler: {
+                    areaTitle: "Dahili Süreçler", pluralTitle: "Dahili Süreçler İçin Amaçlar", singularHedefTitle: "Dahili Süreçler İçin Hedef", pluralHedefTitle: "Dahili Süreç Hedefleri",
+                    pillarColor: 'var(--color-blue)', pillarColorLight: 'var(--color-blue-light)', useDarkText: false, // Blue might be better with light text
+                    amacs: Array.from({ length: 7 }, (_, i) => ({
+                        id: `A${i + 10}`, title: `Operasyonel verimliliği optimize etmek ve süreçleri dijitalleştirmek. Kaynak kullanımını en aza indirmek.`, icon: '⭐',
+                        hedefler: Array.from({ length: Math.floor(Math.random() * 3) + 5 }, (__, j) => ({
+                            id: `H${j + 1}`, title: `Ana süreçlerde otomasyon oranını %${40+j*5}'e yükseltmek. Proje teslim sürelerini %${10+j} kısaltmak.`,
+                            aksiyons: Array.from({ length: Math.floor(Math.random() * 3) + 3 }, (___, k) => ({
+                                id: `.${k + 1}`, title: `Aksiyon ${k+1}: Yeni ERP sistemi entegrasyonunu tamamlamak.`,
+                                subText: [`KPI ${k+1}.1: Sistem geçiş süresi < ${6-k} ay`, `KPI ${k+1}.2: Kullanıcı adaptasyon oranı > %80`]
+                            }))
+                        }))
+                    }))
+                },
+                ogrenmeGelisim: {
+                    areaTitle: "Öğrenme ve Gelişim", pluralTitle: "Öğrenme ve Gelişim Amaçları", singularHedefTitle: "Öğrenme ve Gelişim Hedefi", pluralHedefTitle: "Öğrenme ve Gelişim Hedefleri",
+                    pillarColor: 'var(--color-orange)', pillarColorLight: 'var(--color-orange-light)', useDarkText: true,
+                    amacs: Array.from({ length: 6 }, (_, i) => ({
+                        id: `A${i + 17}`, title: `Çalışan yetkinliklerini ve motivasyonunu artırmak. İnovasyon kültürünü teşvik etmek ve liderlik gelişimini desteklemek.`, icon: '⭐',
+                        hedefler: Array.from({ length: Math.floor(Math.random() * 3) + 5 }, (__, j) => ({
+                            id: `H${j + 1}`, title: `Çalışan başına yıllık eğitim saatini ${30+j*2} saate çıkarmak. İç terfi oranını %${20+j} yapmak.`,
+                            aksiyons: Array.from({ length: Math.floor(Math.random() * 3) + 3 }, (___, k) => ({
+                                id: `.${k + 1}`, title: `Aksiyon ${k+1}: Mentorluk programı başlatmak ve yaygınlaştırmak.`, 
+                                subText: [`KPI ${k+1}.1: Programa katılım oranı > %50`, `KPI ${k+1}.2: Mentor-menti memnuniyet oranı > 4/5`]
+                            }))
+                        }))
+                    }))
+                }
+            };
+
+            function showScreen(screenKey) {
+                Object.values(screens).forEach(s => s.classList.remove('active'));
+                screens[screenKey].classList.add('active');
+            }
+
+            if (cardStackWrapper) cardStackWrapper.addEventListener('click', () => showScreen('s2'));
+            
+            categoryCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    currentStrategicAreaKey = card.dataset.area;
+                    const areaData = strategicVisionData[currentStrategicAreaKey];
+                    currentPillarColor = areaData.pillarColor;
+                    currentPillarColorLight = areaData.pillarColorLight;
+                    currentPillarUseDarkText = areaData.useDarkText;
+                    populateAmacsCarousel();
+                    showScreen('s3');
+                });
+            });
+
+            document.getElementById('s3_backButton').addEventListener('click', () => showScreen('s2'));
+            document.getElementById('s4_backButton').addEventListener('click', () => { populateAmacsCarousel(); showScreen('s3'); });
+            document.getElementById('s5_backButton').addEventListener('click', () => { populateHedeflerCarousel(); showScreen('s4'); });
+
+            function initSwiper(screenKey) {
+                if (swipers[screenKey]) swipers[screenKey].destroy(true, true);
+                swipers[screenKey] = new Swiper(`#${screenKey}_swiper_container`, {
+                    slidesPerView: 1, spaceBetween: 20, grabCursor: true,
+                    pagination: { el: `#${screenKey}_pagination`, clickable: true },
+                    navigation: { nextEl: `#${screenKey}_next`, prevEl: `#${screenKey}_prev` },
+                    breakpoints: { 600: { slidesPerView: 1.5 }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3, spaceBetween: 30 }},
+                    a11y: { prevSlideMessage: 'Önceki', nextSlideMessage: 'Sonraki' },
+                    observer: true, observeParents: true,
+                });
+            }
+            
+            function createItemCardHTML(data, cardType, index, ...additionalArgs) {
+                let mainTitleText = ""; // For "Amaç 1", "Hedef 1"
+                let idForDisplay = "";
+                let description = data.title;
+                let bgColor = 'var(--color-card-bg)';
+                
+                let cardTextColor = currentPillarUseDarkText ? 'var(--color-dark-text)' : 'var(--color-light-text)';
+                let headerElementsColor = cardTextColor; // Default color for title and ID
+
+                let iconHTML = data.icon ? `<div class="item-card-icon" style="color: ${ (currentPillarUseDarkText && cardType !== 'staticAmac' && cardType !== 'staticHedef') ? currentPillarColor : '#FFD700'};">${data.icon}</div>` : '';
+                let kpiStackHTML = '';
+                let cardClasses = "item-card";
+                let isClickable = true;
+
+                if (cardType === 'aksiyon' && data.subText && Array.isArray(data.subText)) {
+                    kpiStackHTML = '<div class="kpi-stack-container">';
+                    data.subText.forEach(kpi => {
+                        kpiStackHTML += `<div class="kpi-item">${kpi.replace(/\n/g, '<br>')}</div>`;
+                    });
+                    kpiStackHTML += '</div>';
+                }
+
+                switch (cardType) {
+                    case 'amac':
+                        mainTitleText = `Amaç ${index + 1}`;
+                        idForDisplay = data.id;
+                        bgColor = currentPillarColor;
+                        cardClasses += " clickable";
+                        headerElementsColor = 'var(--color-accent-text)'; // White on dark pillar color
+                        cardTextColor = currentPillarUseDarkText ? 'var(--color-dark-text)' : 'var(--color-light-text)'; // Description color
+                        break;
+                    case 'staticAmac': // LV2 Index Card
+                        mainTitleText = `Amaç ${index + 1}`;
+                        idForDisplay = data.id;
+                        bgColor = 'var(--color-static-amac-bg)';
+                        cardClasses += " static-header-card static-muted-header clickable";
+                        headerElementsColor = 'var(--color-medium-text)';
+                        cardTextColor = 'var(--color-medium-text)';
+                        break;
+                    case 'hedef': 
+                        mainTitleText = `Hedef ${index + 1}`;
+                        idForDisplay = `${additionalArgs[0]}.${data.id}`;
+                        bgColor = currentPillarColorLight;
+                        cardClasses += " clickable"; // Whole card clickable
+                        headerElementsColor = currentPillarUseDarkText ? 'var(--color-dark-text)' : 'var(--color-accent-text)';
+                        cardTextColor = currentPillarUseDarkText ? 'var(--color-dark-text)' : 'var(--color-light-text)';
+                        if (!data.aksiyons || data.aksiyons.length === 0) {
+                           // isClickable = false; // Decided to keep it clickable, just won't navigate
+                        }
+                        break;
+                    case 'staticHedef': // LV3 Index Card
+                        mainTitleText = `Hedef ${index + 1}`;
+                        idForDisplay = `${additionalArgs[0]}.${data.id}`;
+                        bgColor = 'var(--color-static-amac-bg)'; // Same as staticAmac
+                        cardClasses += " static-header-card static-muted-header clickable"; // Muted style
+                        headerElementsColor = 'var(--color-medium-text)';
+                        cardTextColor = 'var(--color-medium-text)';
+                        break;
+                    case 'aksiyon':
+                        mainTitleText = `Aksiyon ${index + 1}`;
+                        idForDisplay = `${additionalArgs[0]}.${additionalArgs[1]}${data.id}`;
+                        bgColor = 'var(--color-aksiyon-bg)';
+                        cardClasses += " aksiyon-card-item";
+                        isClickable = false;
+                        headerElementsColor = 'var(--color-light-text)';
+                        cardTextColor = 'var(--color-light-text)';
+                        break;
+                }
+                
+                return `
+                    <div class="${cardClasses}" style="background-color: ${bgColor};" ${isClickable ? `data-index="${index}"` : ''} data-id="${data.id}" data-amac-id="${additionalArgs[0] || ''}" data-hedef-id="${cardType === 'staticHedef' || cardType === 'aksiyon' ? data.id : ''}">
+                        <div class="item-card-header">
+                            <span class="item-card-main-title" style="color: ${headerElementsColor};">${mainTitleText}</span>
+                            <span class="item-card-id" style="color: ${headerElementsColor}; background-color: ${ (cardType === 'staticAmac' || cardType === 'staticHedef') ? 'rgba(170,170,170,0.1)' : (currentPillarUseDarkText && (cardType === 'amac' || cardType === 'hedef')) ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.15)'};">${idForDisplay}</span>
+                        </div>
+                        <p class="item-card-description" style="color: ${cardTextColor};">${description.replace(/\n/g, '<br>')}</p>
+                        ${iconHTML}
+                        ${kpiStackHTML}
+                    </div>`;
+            }
+
+            function populateAmacsCarousel() {
+                const areaData = strategicVisionData[currentStrategicAreaKey];
+                document.getElementById('s3_title').innerHTML = `<span class="main-title-text">${areaData.pluralTitle}</span>`;
+                const wrapper = document.getElementById('s3_swiper_wrapper');
+                wrapper.innerHTML = '';
+
+                areaData.amacs.forEach((amac, index) => {
+                    const slide = document.createElement('div');
+                    slide.classList.add('swiper-slide');
+                    slide.innerHTML = createItemCardHTML(amac, 'amac', index);
+                    wrapper.appendChild(slide);
+                });
+                initSwiper('s3');
+                
+                wrapper.querySelectorAll('.item-card.clickable[data-id^="A"]').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const amacIndex = parseInt(card.dataset.index);
+                        currentAmac = areaData.amacs[amacIndex];
+                        populateHedeflerCarousel();
+                        showScreen('s4');
+                    });
+                });
+            }
+
+            function populateHedeflerCarousel() {
+                const areaData = strategicVisionData[currentStrategicAreaKey];
+                const originalAmacIndex = areaData.amacs.findIndex(a => a.id === currentAmac.id);
+                const amacShortTitle = `Amaç ${originalAmacIndex + 1}`;
+                
+                document.getElementById('s4_title').innerHTML = `<span class="title-eyebrow">${currentAmac.id}</span> <span style="color: var(--color-medium-text);">${amacShortTitle}</span> <span class="title-text-separator">/</span> <span class="main-title-text">Hedefler</span>`;
+                document.getElementById('s4_backButton').innerHTML = `&larr; ${areaData.pluralTitle}`;
+                const wrapper = document.getElementById('s4_swiper_wrapper');
+                wrapper.innerHTML = '';
+
+                const amacStaticSlide = document.createElement('div');
+                amacStaticSlide.classList.add('swiper-slide');
+                amacStaticSlide.innerHTML = createItemCardHTML(currentAmac, 'staticAmac', originalAmacIndex);
+                wrapper.appendChild(amacStaticSlide);
+                amacStaticSlide.querySelector('.static-muted-header').addEventListener('click', () => {
+                     populateAmacsCarousel(); showScreen('s3');
+                });
+
+                currentAmac.hedefler.forEach((hedef, index) => {
+                    const slide = document.createElement('div');
+                    slide.classList.add('swiper-slide');
+                    slide.innerHTML = createItemCardHTML(hedef, 'hedef', index, currentAmac.id);
+                    wrapper.appendChild(slide);
+                });
+                initSwiper('s4');
+
+                wrapper.querySelectorAll('.item-card.clickable[data-id^="H"]').forEach(card => {
+                     const hedefIndex = parseInt(card.dataset.index);
+                     const clickedHedef = currentAmac.hedefler[hedefIndex];
+                     if (clickedHedef.aksiyons && clickedHedef.aksiyons.length > 0) {
+                        card.addEventListener('click', () => {
+                            currentHedef = clickedHedef;
+                            populateAksiyonsCarousel();
+                            showScreen('s5');
+                        });
+                    } else {
+                        card.style.cursor = 'default'; 
+                        card.classList.remove('clickable'); 
+                    }
+                });
+            }
+
+            function populateAksiyonsCarousel() {
+                const areaData = strategicVisionData[currentStrategicAreaKey];
+                const hedefFullId = `${currentAmac.id}.${currentHedef.id}`;
+                const originalHedefIndex = currentAmac.hedefler.findIndex(h => h.id === currentHedef.id);
+                const hedefShortTitle = `Hedef ${originalHedefIndex + 1}`;
+
+                document.getElementById('s5_title').innerHTML = `<span class="title-eyebrow">${hedefFullId}</span> <span style="color: var(--color-medium-text);">${hedefShortTitle}</span> <span class="title-text-separator">/</span> <span class="main-title-text">Aksiyonlar</span>`;
+                document.getElementById('s5_backButton').innerHTML = `&larr; ${hedefShortTitle}`; // Back to "Hedef 1" etc.
+                const wrapper = document.getElementById('s5_swiper_wrapper');
+                wrapper.innerHTML = '';
+
+                const hedefStaticSlide = document.createElement('div');
+                hedefStaticSlide.classList.add('swiper-slide');
+                // Pass originalHedefIndex for the "Hedef X" title part of the static card
+                hedefStaticSlide.innerHTML = createItemCardHTML(currentHedef, 'staticHedef', originalHedefIndex, currentAmac.id);
+                wrapper.appendChild(hedefStaticSlide);
+                hedefStaticSlide.querySelector('.static-muted-header').addEventListener('click', () => {
+                    populateHedeflerCarousel(); showScreen('s4');
+                });
+
+                currentHedef.aksiyons.forEach((aksiyon, index) => {
+                    const slide = document.createElement('div');
+                    slide.classList.add('swiper-slide');
+                    slide.innerHTML = createItemCardHTML(aksiyon, 'aksiyon', index, currentAmac.id, currentHedef.id);
+                    wrapper.appendChild(slide);
+                });
+                initSwiper('s5');
+            }
+            
+            showScreen('s1');
+        });
+    </script>
+</body>
+</html>
