@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta name="description" content="Turkish business strategy hierarchy visualization tool">
+    <meta name="keywords" content="business, strategy, visualization, balanced scorecard">
+</head>
+<body>
+    <div class="main-container w-full min-h-screen flex items-center justify-center">
+        <!-- Screen 1: Initial Stack -->
+        <section id="screen1" class="screen active">
+            <div class="screen-content w-full max-w-6xl mx-auto pt-5">
+                <div class="card-stack-wrapper flex justify-center items-center perspective-1000 mb-5 cursor-pointer">
+                    <div class="card-stack relative w-56 h-80">
+                        <div class="stacked-card card-orange" style="--offset: 3;">
+                            <div class="card-content-inner text-center text-white">
+                                <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                                <h2 class="text-3xl mb-4 font-bold text-white">Öğrenme & Gelişim</h2>
+                                <div class="card-icon-placeholder text-4xl mt-2">🌱</div>
+                            </div>
+                        </div>
+                        <div class="stacked-card card-blue" style="--offset: 2;">
+                            <div class="card-content-inner text-center text-white">
+                                <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                                <h2 class="text-3xl mb-4 font-bold text-white">Dahili Süreçler</h2>
+                                <div class="card-icon-placeholder text-4xl mt-2">⚙️</div>
+                            </div>
+                        </div>
+                        <div class="stacked-card card-green" style="--offset: 1;">
+                            <div class="card-content-inner text-center text-white">
+                                <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                                <h2 class="text-3xl mb-4 font-bold text-white">Müşteri</h2>
+                                <div class="card-icon-placeholder text-4xl mt-2">🧑‍🤝‍🧑</div>
+                            </div>
+                        </div>
+                        <div class="stacked-card card-red" style="--offset: 0;" id="top-stacked-card">
+                            <div class="card-content-inner text-center text-white">
+                                <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                                <h2 class="text-3xl mb-4 font-bold text-white">Finans</h2>
+                                <div class="card-icon-placeholder text-4xl mt-2">💰</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="screen1-prompt mt-8 text-base text-medium-text">Başlamak için kartlara tıklayın</p>
+            </div>
+        </section>
+
+        <!-- Screen 2: Stratejik Temel Alanlar (Categories) -->
+        <section id="screen2" class="screen">
+            <button class="nav-button home-button" aria-label="Ana Sayfa">🏠</button>
+            <div class="screen-content w-full max-w-6xl mx-auto pt-16">
+                <h2 class="carousel-screen-title text-white mt-0 mb-5 text-center flex items-center justify-center flex-wrap">
+                    <span class="main-title-text text-3xl font-bold inline">Stratejik Temel Alanlar</span>
+                </h2>
+                <div class="category-cards-container flex flex-wrap gap-5 justify-center items-center py-5">
+                    <div class="category-card card-red bg-red" data-area="finans">
+                        <div class="card-content-inner text-center text-white">
+                            <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                            <h2 class="text-3xl mb-4 font-bold text-white">Finans</h2>
+                            <div class="card-icon-placeholder text-4xl mt-2">💰</div>
+                        </div>
+                    </div>
+                    <div class="category-card card-green bg-green" data-area="musteri">
+                        <div class="card-content-inner text-center text-white">
+                            <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                            <h2 class="text-3xl mb-4 font-bold text-white">Müşteri</h2>
+                            <div class="card-icon-placeholder text-4xl mt-2">🧑‍🤝‍🧑</div>
+                        </div>
+                    </div>
+                    <div class="category-card card-blue bg-blue" data-area="dahiliSurecler">
+                        <div class="card-content-inner text-center text-white">
+                            <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                            <h2 class="text-3xl mb-4 font-bold text-white">Dahili Süreçler</h2>
+                            <div class="card-icon-placeholder text-4xl mt-2">⚙️</div>
+                        </div>
+                    </div>
+                    <div class="category-card card-orange bg-orange" data-area="ogrenmeGelisim">
+                        <div class="card-content-inner text-center text-white">
+                            <span class="card-header-label text-xs text-gray-300 mb-1 block uppercase font-medium">STRATEJİK TEMEL ALANLAR</span>
+                            <h2 class="text-3xl mb-4 font-bold text-white">Öğrenme & Gelişim</h2>
+                            <div class="card-icon-placeholder text-4xl mt-2">🌱</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 3: Amaçlar Listesi (LV1) -->
+        <section id="screen3" class="screen">
+            <button id="s3_backButton" class="nav-button back-button">&larr; Stratejik Temel Alanlar</button>
+            <button class="nav-button home-button" aria-label="Ana Sayfa">🏠</button>
+            <div class="screen-content w-full max-w-6xl mx-auto pt-16">
+                <h3 id="s3_title" class="carousel-screen-title text-white text-3xl font-bold mb-8 mt-2 text-center flex items-center justify-center flex-wrap"></h3>
+                <div class="swiper-container w-full max-w-[90%] pt-5 pb-12" id="s3_swiper_container">
+                    <div class="swiper-wrapper" id="s3_swiper_wrapper"></div>
+                    <div class="swiper-pagination" id="s3_pagination"></div>
+                    <div class="swiper-button-prev" id="s3_prev"></div>
+                    <div class="swiper-button-next" id="s3_next"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 4: Hedefler Listesi (LV2) -->
+        <section id="screen4" class="screen">
+            <button id="s4_backButton" class="nav-button back-button"></button>
+            <button class="nav-button home-button" aria-label="Ana Sayfa">🏠</button>
+            <div class="screen-content w-full max-w-6xl mx-auto pt-16">
+                <h3 id="s4_title" class="carousel-screen-title text-white text-3xl font-bold mb-8 mt-2 text-center flex items-center justify-center flex-wrap"></h3>
+                <div class="swiper-container w-full max-w-[90%] pt-5 pb-12" id="s4_swiper_container">
+                    <div class="swiper-wrapper" id="s4_swiper_wrapper"></div>
+                    <div class="swiper-pagination" id="s4_pagination"></div>
+                    <div class="swiper-button-prev" id="s4_prev"></div>
+                    <div class="swiper-button-next" id="s4_next"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen 5: Aksiyonlar Listesi (LV3) -->
+        <section id="screen5" class="screen">
+            <button id="s5_backButton" class="nav-button back-button"></button>
+            <button class="nav-button home-button" aria-label="Ana Sayfa">🏠</button>
+            <div class="screen-content w-full max-w-6xl mx-auto pt-16">
+                <h3 id="s5_title" class="carousel-screen-title text-white text-3xl font-bold mb-8 mt-2 text-center flex items-center justify-center flex-wrap"></h3>
+                <div class="swiper-container w-full max-w-[90%] pt-5 pb-12" id="s5_swiper_container">
+                    <div class="swiper-wrapper" id="s5_swiper_wrapper"></div>
+                    <div class="swiper-pagination" id="s5_pagination"></div>
+                    <div class="swiper-button-prev" id="s5_prev"></div>
+                    <div class="swiper-button-next" id="s5_next"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

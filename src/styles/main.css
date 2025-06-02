@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #f0f0f0;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  
+  :root {
+    --color-aksiyon-bg: #000000;
+  }
+}
+
+@layer components {
+  /* Screen Management */
+  .screen {
+    @apply w-full min-h-screen p-5 flex flex-col items-center justify-center text-center;
+    @apply transition-opacity duration-300 ease-in-out relative;
+    display: none;
+  }
+  
+  .screen.active {
+    display: flex !important;
+  }
+
+  /* Card Stack 3D Effect */
+  .card-stack {
+    @apply relative perspective-1000;
+  }
+  
+  .stacked-card {
+    @apply absolute w-full h-full rounded-xl shadow-lg border-4 border-white;
+    @apply flex flex-col justify-center items-center p-5;
+    @apply transform-gpu transition-all duration-300 ease-out;
+    transform-origin: center;
+    transform: translateX(calc(var(--offset) * 10px)) translateY(calc(var(--offset) * -10px)) translateZ(calc(var(--offset) * -20px)) rotateZ(calc(var(--offset) * 2deg));
+  }
+  
+  /* Card color classes */
+  .card-red { background-color: #D9534F; }
+  .card-green { background-color: #5CB85C; }
+  .card-blue { background-color: #428BCA; }
+  .card-orange { background-color: #F0AD4E; }
+  
+  /* Strategic area background colors */
+  .bg-finans { background-color: #D9534F; }
+  .bg-musteri { background-color: #5CB85C; }
+  .bg-dahili-surecler { background-color: #428BCA; }
+  .bg-ogrenme-gelisim { background-color: #F0AD4E; }
+  
+  /* Light background colors for level 2 cards */
+  .bg-finans-light { background-color: #F8D7DA; }
+  .bg-musteri-light { background-color: #DFF0D8; }
+  .bg-dahili-surecler-light { background-color: #D9EDF7; }
+  .bg-ogrenme-gelisim-light { background-color: #FCF8E3; }
+  
+  /* Text color overrides for light backgrounds */
+  .bg-finans-light,
+  .bg-musteri-light, 
+  .bg-dahili-surecler-light,
+  .bg-ogrenme-gelisim-light {
+    color: #212529 !important;
+  }
+  
+  .bg-finans-light .item-card-main-title,
+  .bg-finans-light .item-card-id,
+  .bg-finans-light .item-card-description,
+  .bg-musteri-light .item-card-main-title,
+  .bg-musteri-light .item-card-id,
+  .bg-musteri-light .item-card-description,
+  .bg-dahili-surecler-light .item-card-main-title,
+  .bg-dahili-surecler-light .item-card-id,
+  .bg-dahili-surecler-light .item-card-description,
+  .bg-ogrenme-gelisim-light .item-card-main-title,
+  .bg-ogrenme-gelisim-light .item-card-id,
+  .bg-ogrenme-gelisim-light .item-card-description {
+    color: #212529 !important;
+  }
+  
+  .card-stack-wrapper:hover .stacked-card {
+    transform: 
+      translateX(calc(var(--offset) * 12px)) 
+      translateY(calc(var(--offset) * -12px)) 
+      translateZ(calc(var(--offset) * -10px)) 
+      rotateZ(calc(var(--offset) * 1deg));
+  }
+  
+  .card-stack-wrapper:hover .stacked-card:nth-child(4) {
+    @apply scale-102 translate-y-[-10px];
+    transform: translateY(-10px) translateZ(10px) scale(1.02);
+  }
+  
+  /* Category Cards */
+  .category-card {
+    @apply w-56 h-80 rounded-xl p-5 flex flex-col justify-center items-center text-center;
+    @apply cursor-pointer transition-all duration-300 shadow-lg border-4 border-white;
+  }
+  
+  .category-card:hover {
+    @apply transform -translate-y-2.5 scale-105 shadow-2xl;
+  }
+  
+  /* Item Cards */
+  .item-card {
+    @apply bg-gray-800 rounded-xl p-5 flex flex-col items-start text-left;
+    @apply min-h-[300px] border border-gray-700 shadow-lg relative;
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  .item-card.clickable:hover {
+    @apply transform -translate-y-1 shadow-xl cursor-pointer;
+  }
+  
+  .static-header-card {
+    @apply opacity-90 cursor-pointer border-2 border-dashed border-gray-500;
+  }
+  
+  .static-header-card:hover {
+    @apply transform -translate-y-1 shadow-md;
+  }
+  
+  .static-muted-header {
+    @apply bg-gray-900;
+  }
+  
+  .aksiyon-card-item {
+    @apply bg-black border-gray-800;
+  }
+  
+  /* Title Components */
+  .title-eyebrow {
+    @apply text-sm font-medium bg-white bg-opacity-15 px-2 py-1 rounded;
+    @apply mr-2 inline-block;
+    line-height: 1.2;
+    vertical-align: baseline;
+  }
+  
+  .title-text-separator {
+    @apply mx-1 font-normal text-gray-400 text-sm;
+  }
+  
+  .title-parent-name {
+    @apply text-gray-400 text-sm;
+  }
+  
+  .main-title-text {
+    @apply text-3xl font-bold inline;
+  }
+
+  /* Navigation Buttons */
+  .nav-button {
+    @apply absolute top-6 bg-gray-500 text-gray-900 border-none;
+    @apply px-4 py-2 rounded cursor-pointer text-sm font-medium;
+    @apply transition-colors duration-300 z-[100];
+  }
+  
+  .nav-button:hover {
+    @apply bg-gray-300;
+  }
+  
+  .back-button {
+    @apply left-6;
+  }
+  
+  .home-button {
+    @apply right-6 text-xl px-3 py-2 bg-black text-white;
+  }
+  
+  /* KPI Items */
+  .kpi-item {
+    @apply text-xs bg-white bg-opacity-5 p-2 rounded w-full mt-2;
+    @apply whitespace-pre-line text-gray-300;
+  }
+  
+  .aksiyon-card-item .kpi-item {
+    @apply bg-white bg-opacity-10;
+  }
+  
+  /* Swiper Customizations */
+  .swiper-button-next,
+  .swiper-button-prev {
+    @apply text-white bg-black bg-opacity-50 rounded-full;
+    @apply w-11 h-11 transition-colors duration-300;
+    border-radius: 50% !important;
+  }
+  
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    @apply bg-black bg-opacity-60;
+  }
+  
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 20px !important;
+  }
+  
+  .swiper-pagination-bullet {
+    @apply bg-gray-500 opacity-70;
+  }
+  
+  .swiper-pagination-bullet-active {
+    @apply bg-gray-300 opacity-100;
+  }
+}
+
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .transform-gpu {
+    transform: translate3d(0, 0, 0);
+  }
+  
+  .scale-102 {
+    transform: scale(1.02);
+  }
+  
+  /* Custom width classes */
+  .w-45 { width: 11.25rem; }
+  .w-55 { width: 13.75rem; }
+  
+  /* Custom height classes */ 
+  .h-70 { height: 17.5rem; }
+  .h-75 { height: 18.75rem; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-button {
+    @apply top-4 px-3 py-2;
+  }
+  
+  .back-button {
+    @apply left-4;
+  }
+  
+  .home-button {
+    @apply right-4 text-lg px-2.5 py-1.5;
+  }
+  
+  .category-card {
+    @apply w-4/5 max-w-[280px] h-auto min-h-[240px];
+  }
+  
+  .stacked-card {
+    @apply w-44 h-72;
+  }
+  
+  .item-card {
+    @apply min-h-[280px];
+  }
+}
